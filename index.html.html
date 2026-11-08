@@ -1,0 +1,498 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Lumen for Android</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: dark glass landing page. Hero (copy + oversized phone), facts strip, screenshot rail, feature grid, download band, footer. */
+:root{
+  --bg:#07080f;
+  --bg-2:#0d1020;
+  --fg:#eef1fb;
+  --muted:#98a2bf;
+  --line:rgba(255,255,255,.1);
+  --glass:rgba(255,255,255,.055);
+  --glass-hi:rgba(255,255,255,.1);
+  --accent:#3df5c0;
+  --accent-ink:#03140e;
+  --iris:#6b78ff;
+  --hot:#ff6b8b;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:5rem}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+.page{position:relative;overflow:clip;isolation:isolate}
+.wrap{width:100%;max-width:72rem;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);z-index:-1;pointer-events:none;animation:drift 20s ease-in-out infinite alternate}
+.o1{width:38rem;height:38rem;top:-9rem;right:-12rem;background:radial-gradient(circle,var(--iris),transparent 65%);opacity:.5}
+.o2{width:34rem;height:34rem;top:26rem;left:-15rem;background:radial-gradient(circle,var(--accent),transparent 65%);opacity:.22;animation-delay:-6s}
+.o3{width:36rem;height:36rem;top:92rem;right:-14rem;background:radial-gradient(circle,var(--hot),transparent 65%);opacity:.2;animation-delay:-3s}
+.o4{width:34rem;height:34rem;bottom:-8rem;left:-12rem;background:radial-gradient(circle,var(--iris),transparent 65%);opacity:.3;animation-delay:-9s}
+.gridbg{position:absolute;inset:0 0 auto;height:46rem;z-index:-1;pointer-events:none;opacity:.3;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:56px 56px;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 25%,#000 5%,transparent 70%);mask-image:radial-gradient(ellipse at 50% 25%,#000 5%,transparent 70%)}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(7,8,15,.55);-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:.7rem}
+.brand{display:flex;align-items:center;gap:.65rem;font:700 1.05rem/1 var(--display);letter-spacing:-.01em;text-decoration:none}
+.brand svg{width:2rem;height:2rem}
+.nav-links{display:none;gap:1.9rem}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.92rem;transition:color .2s}
+.nav-links a:hover{color:var(--fg)}
+@media(min-width:760px){.nav-links{display:flex}}
+.btn-sm{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem 1.05rem;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.9rem;text-decoration:none;white-space:nowrap}
+.btn-sm .ic{width:1.05rem;height:1.05rem;stroke-width:2.2}
+
+/* hero */
+.hero{padding-block:clamp(2.5rem,6vw,4.5rem) clamp(2.5rem,6vw,5rem)}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:2rem 3rem;align-items:center}
+@media(max-width:900px){.hero .wrap{grid-template-columns:1fr}}
+.hero-copy{min-width:0}
+.pill{display:inline-flex;align-items:center;gap:.6rem;padding:.4rem .9rem;border:1px solid var(--line);border-radius:999px;background:var(--glass);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font:500 .74rem/1.2 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.pill i{width:.5rem;height:.5rem;border-radius:50%;background:var(--accent);animation:ping 2.2s infinite}
+h1{font:700 clamp(2.2rem,6.2vw,4.9rem)/1.03 var(--display);letter-spacing:-.04em;margin:1.2rem 0 1.15rem;text-wrap:balance}
+.grad{background:linear-gradient(95deg,var(--accent),var(--iris) 62%,var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{max-width:33rem;margin:0 0 2rem;color:var(--muted);font-size:clamp(1rem,1.7vw,1.2rem)}
+.dl{position:relative;display:flex;align-items:center;gap:1.1rem;width:100%;max-width:30rem;padding:1.15rem 1.5rem;border-radius:1.5rem;overflow:hidden;background:linear-gradient(120deg,var(--accent),#86ffe0);color:var(--accent-ink);text-decoration:none;box-shadow:0 1.2rem 3rem -1rem rgba(61,245,192,.65),inset 0 0 0 1px rgba(255,255,255,.4);transition:transform .25s,box-shadow .25s;animation:glow 3.2s ease-in-out infinite}
+.dl::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.6) 50%,transparent 70%);transform:translateX(-120%);animation:shimmer 3.6s ease-in-out infinite}
+.dl:hover{transform:translateY(-3px) scale(1.01)}
+.dl>*{position:relative;z-index:1}
+.dl .ic{width:2.7rem;height:2.7rem;stroke-width:2}
+.dl b{display:block;font:700 clamp(1.3rem,3.6vw,1.8rem)/1.1 var(--display);letter-spacing:-.025em}
+.dl small{display:block;margin-top:.3rem;font:500 .8rem/1.3 var(--mono);opacity:.72}
+.hero-links{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem 1.6rem;margin-top:1.5rem}
+.hero-links a{display:inline-flex;align-items:center;gap:.4rem;color:var(--fg);font-weight:500;text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:.15rem}
+.hero-links a:hover{border-color:var(--accent)}
+.trust{display:flex;flex-wrap:wrap;gap:.5rem 1.3rem;margin:1.6rem 0 0;padding:0;list-style:none;color:var(--muted);font-size:.9rem}
+.trust li{display:flex;align-items:center;gap:.45rem}
+.trust .ic{color:var(--accent);stroke-width:2.4;width:1rem;height:1rem}
+
+/* phone */
+.stage{position:relative;display:grid;place-items:center;min-height:42rem;perspective:1400px}
+.stage::before{content:"";position:absolute;width:26rem;height:26rem;max-width:100%;border-radius:50%;background:radial-gradient(circle,rgba(107,120,255,.55),rgba(61,245,192,.18) 45%,transparent 70%);filter:blur(30px);animation:drift 14s ease-in-out infinite alternate}
+.tilt{position:relative;z-index:2;transition:transform .3s ease-out;transform-style:preserve-3d}
+.phone{position:relative;width:18.75em;aspect-ratio:300/620;max-width:100%;padding:.55em;border-radius:2.75em;background:linear-gradient(150deg,#323852,#0b0d17 60%);box-shadow:inset 0 0 0 .1em rgba(255,255,255,.14),0 3em 5em -1em rgba(0,0,0,.75),0 0 7em -2em rgba(61,245,192,.4)}
+.big{font-size:16px;animation:bob 7s ease-in-out infinite}
+@media(max-width:480px){.big{font-size:14px}.stage{min-height:36rem}}
+.screen{position:relative;display:flex;flex-direction:column;gap:.8em;height:100%;padding:2.9em 1.1em 0;border-radius:2.25em;overflow:hidden;background:linear-gradient(180deg,#12163a,#0a0b17 70%)}
+.screen::before{content:"";position:absolute;top:.7em;left:50%;translate:-50% 0;width:5.4em;height:1.45em;border-radius:1em;background:#000;z-index:3}
+.sb{position:absolute;top:.85em;left:1.8em;right:1.8em;display:flex;justify-content:space-between;align-items:center;font:700 .68em/1 var(--body);color:#dfe4ff;z-index:4}
+.sbi{display:flex;gap:.3em}
+.sbi i{width:.9em;height:.9em;border-radius:.25em;background:rgba(223,228,255,.8)}
+.s-hi{font-size:.72em;color:var(--muted)}
+.s-title{font:700 1.5em/1.15 var(--display);letter-spacing:-.03em}
+.s-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:1.2em;padding:.9em}
+.ringcard{display:flex;align-items:center;gap:1em}
+.ring-wrap{position:relative;width:6.2em;height:6.2em;flex:none}
+.ring-wrap svg{width:100%;height:100%;display:block}
+.trk{fill:none;stroke:rgba(255,255,255,.1);stroke-width:10}
+.prg{fill:none;stroke:url(#rg);stroke-width:10;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50px 50px;stroke-dasharray:100;stroke-dashoffset:var(--o);animation:ring 1.6s .3s cubic-bezier(.2,.7,.2,1) both}
+.ring-n{position:absolute;inset:0;display:grid;place-items:center;font:700 1.25em var(--display);letter-spacing:-.03em}
+.ring-t{display:flex;flex-direction:column;gap:.15em;min-width:0}
+.ring-t b{font-size:.95em}
+.ring-t span{font-size:.72em;color:var(--muted)}
+.ring-t em{align-self:flex-start;margin-top:.35em;padding:.2em .6em;border-radius:1em;background:rgba(61,245,192,.15);color:var(--accent);font:500 .62em var(--mono);font-style:normal;letter-spacing:.04em;text-transform:uppercase}
+.s-row{display:flex;gap:.7em}
+.mini{flex:1;min-width:0}
+.mini b{display:block;font:700 1.1em/1.2 var(--display);letter-spacing:-.03em}
+.mini span{font-size:.66em;color:var(--muted)}
+.s-item{display:flex;align-items:center;gap:.7em;padding:.7em .8em;border-radius:1em;background:rgba(255,255,255,.05)}
+.s-item b{display:block;font-size:.78em;line-height:1.3}
+.s-item small{font-size:.62em;color:var(--muted)}
+.s-item.done b{text-decoration:line-through;opacity:.5}
+.dot{width:2em;height:2em;flex:none;border-radius:.7em;background:linear-gradient(135deg,var(--accent),var(--iris))}
+.dot.b{background:linear-gradient(135deg,var(--hot),var(--iris))}
+.dot.c{background:linear-gradient(135deg,#ffc36b,var(--hot))}
+.chk{width:1.6em;height:1.6em;flex:none;border-radius:50%;border:.14em solid rgba(255,255,255,.25);display:grid;place-items:center}
+.chk.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chk .ic{width:.9em;height:.9em;stroke-width:3}
+.bars{display:flex;align-items:flex-end;gap:.5em;height:8.2em}
+.bars i{flex:1;height:var(--h);border-radius:.5em .5em .2em .2em;background:linear-gradient(var(--accent),var(--iris));transform-origin:bottom;animation:grow 1.2s calc(var(--i)*.08s + .2s) cubic-bezier(.2,.7,.2,1) both}
+.bars i.lo{opacity:.45}
+.days{display:flex;gap:.5em;margin-top:.5em;font-size:.6em;color:var(--muted);text-align:center}
+.days span{flex:1}
+.prog{height:.55em;border-radius:1em;background:rgba(255,255,255,.1);overflow:hidden}
+.prog i{display:block;width:66%;height:100%;border-radius:1em;background:linear-gradient(90deg,var(--accent),var(--iris))}
+.avatar{width:2.8em;height:2.8em;flex:none;border-radius:50%;background:linear-gradient(135deg,var(--hot),var(--iris))}
+.tg{position:relative;width:2.2em;height:1.25em;flex:none;margin-left:auto;border-radius:1em;background:rgba(255,255,255,.16)}
+.tg::after{content:"";position:absolute;top:.15em;left:.15em;width:.95em;height:.95em;border-radius:50%;background:#fff;transition:transform .2s}
+.tg.on{background:var(--accent)}
+.tg.on::after{transform:translateX(.95em)}
+.s-tabs{display:flex;justify-content:space-around;margin:auto -1.1em 0;padding:.9em .5em 1.3em;border-top:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.28);color:#6d7594}
+.s-tabs .ic{width:1.4em;height:1.4em}
+.s-tabs .on{color:var(--accent)}
+
+.chip{position:absolute;z-index:5;display:flex;align-items:center;gap:.65rem;padding:.65rem .95rem .65rem .7rem;border-radius:1.1rem;background:rgba(20,24,46,.55);border:1px solid var(--line);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 1rem 2rem -.5rem rgba(0,0,0,.55);white-space:nowrap;animation:float 6s ease-in-out infinite}
+.chip b{display:block;font-size:.85rem;line-height:1.25}
+.chip small{display:block;font-size:.72rem;color:var(--muted);line-height:1.3}
+.ci{display:grid;place-items:center;width:2.1rem;height:2.1rem;border-radius:.75rem;background:linear-gradient(135deg,rgba(61,245,192,.28),rgba(107,120,255,.28));color:var(--accent)}
+.ci .ic{width:1.1rem;height:1.1rem}
+.c1{top:11%;left:-3%}
+.c2{top:45%;right:-5%;animation-delay:-2s}
+.c3{bottom:9%;left:-1%;animation-delay:-4s}
+@media(max-width:480px){.c1{left:0}.c2{right:0}.c3{left:0}}
+
+/* sections */
+.sec{padding-block:clamp(3.5rem,8vw,6.5rem)}
+.sec-head{max-width:40rem;margin-bottom:2.5rem}
+.eyebrow{font:500 .76rem/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h2{margin:.8rem 0 0;font:700 clamp(1.7rem,4.2vw,3rem)/1.1 var(--display);letter-spacing:-.035em;text-wrap:balance}
+.sec-head p{margin:1rem 0 0;color:var(--muted);max-width:34rem}
+
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media(max-width:760px){.facts{grid-template-columns:repeat(2,1fr)}}
+.fact{min-width:0;padding:1.25rem;border-radius:1.5rem;background:var(--glass);border:1px solid var(--line);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12);transition:transform .3s,background .3s}
+.fact:hover{transform:translateY(-4px);background:var(--glass-hi)}
+.fact .ic{width:1.5rem;height:1.5rem;color:var(--accent);margin-bottom:1.1rem}
+.fact span{display:block;font:500 .7rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.fact b{display:block;margin-top:.35rem;font:700 clamp(1.15rem,2.6vw,1.7rem)/1.15 var(--display);letter-spacing:-.03em;overflow-wrap:anywhere}
+
+.rail{display:flex;gap:2rem;overflow-x:auto;padding:1rem .5rem 2.5rem;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent}
+.shot{flex:none;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:1.2rem}
+.shot:first-child{margin-left:auto}
+.shot:last-child{margin-right:auto}
+.shot:nth-child(even){margin-top:2.2rem}
+.shot .phone{font-size:11.5px;transition:transform .4s}
+.shot:hover .phone{transform:translateY(-8px) rotate(-1deg)}
+.shot figcaption{font:500 .74rem/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.shot{margin-block-end:0}
+
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(15.5rem,1fr));gap:1rem}
+.feat{min-width:0;padding:1.6rem;border-radius:1.6rem;background:var(--glass);border:1px solid var(--line);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12);transition:transform .3s,border-color .3s}
+.feat:hover{transform:translateY(-5px);border-color:rgba(61,245,192,.4)}
+.feat .tile{display:grid;place-items:center;width:3.2rem;height:3.2rem;margin-bottom:1.3rem;border-radius:1rem;color:var(--accent);background:linear-gradient(135deg,rgba(61,245,192,.22),rgba(107,120,255,.25));box-shadow:0 0 2rem -.4rem rgba(61,245,192,.45),inset 0 0 0 1px rgba(255,255,255,.14)}
+.feat .tile .ic{width:1.5rem;height:1.5rem}
+.feat h3{margin:0 0 .5rem;font:700 1.08rem/1.3 var(--display);letter-spacing:-.02em}
+.feat p{margin:0;color:var(--muted);font-size:.95rem}
+
+.band{padding:clamp(1.5rem,4vw,3rem);border-radius:2rem;background:linear-gradient(135deg,rgba(107,120,255,.22),rgba(61,245,192,.1) 55%,rgba(255,107,139,.14));border:1px solid rgba(255,255,255,.16);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 3rem 6rem -2rem rgba(0,0,0,.6)}
+.band-top{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center}
+@media(max-width:860px){.band-top{grid-template-columns:1fr}}
+.band-top>*{min-width:0}
+.count{display:block;margin-top:.7rem;font:700 clamp(2.4rem,7vw,4.4rem)/1 var(--display);letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.band p{margin:.8rem 0 0;color:var(--muted);max-width:26rem}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:2.5rem 0 0;padding:0;list-style:none}
+@media(max-width:760px){.steps{grid-template-columns:1fr}}
+.steps li{display:flex;gap:.9rem;padding:1.1rem;border-radius:1.2rem;background:rgba(7,8,15,.35);border:1px solid var(--line);color:var(--muted);font-size:.93rem}
+.steps b{display:grid;place-items:center;flex:none;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--accent);color:var(--accent-ink);font:700 .8rem var(--mono)}
+
+footer{border-top:1px solid var(--line);padding-block:2.5rem 3rem;background:rgba(7,8,15,.5)}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1.5rem 3rem}
+.foot p{margin:.8rem 0 0;max-width:22rem;color:var(--muted);font-size:.92rem}
+.foot nav{display:flex;flex-wrap:wrap;gap:.7rem 1.6rem;align-items:flex-start}
+.foot nav a{color:var(--muted);text-decoration:none;font-size:.92rem}
+.foot nav a:hover{color:var(--fg)}
+.legal{margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:.6rem 2rem;color:var(--muted);font-size:.82rem}
+
+.rv{transform:translateY(28px);transition:transform .9s cubic-bezier(.2,.7,.2,1) calc(var(--d,0)*1ms)}
+.rv.in{transform:none}
+
+@keyframes drift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(3rem,2rem,0) scale(1.12)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(61,245,192,.6)}70%,100%{box-shadow:0 0 0 .6rem rgba(61,245,192,0)}}
+@keyframes glow{0%,100%{box-shadow:0 1.2rem 3rem -1rem rgba(61,245,192,.5),inset 0 0 0 1px rgba(255,255,255,.4)}50%{box-shadow:0 1.4rem 4.2rem -.6rem rgba(61,245,192,.85),inset 0 0 0 1px rgba(255,255,255,.4)}}
+@keyframes shimmer{0%,55%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+@keyframes ring{from{stroke-dashoffset:100}}
+@keyframes grow{from{transform:scaleY(.04)}}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+  .rv{transform:none}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3df5c0"/><stop offset="1" stop-color="#6b78ff"/></linearGradient>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3df5c0"/><stop offset="1" stop-color="#6b78ff"/></linearGradient>
+  </defs>
+  <symbol id="logo" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="url(#lg)"/><circle cx="16" cy="17" r="6.5" fill="#06101a"/><circle cx="22.5" cy="9.5" r="2.4" fill="#fff"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.5a5 5 0 017 0M5 12.5a10 10 0 015-2.7M19 12.5a10 10 0 00-4.5-2.6M2 8.5a15 15 0 019-3.9M22 8.5a15 15 0 00-5.5-3.4M12 20h.01"/></symbol>
+  <symbol id="i-battery" viewBox="0 0 24 24"><rect x="2" y="7" width="17" height="10" rx="2.5"/><path d="M22 10.5v3M6 10.5v3M10 10.5v3"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h8M16 6h4M4 12h3M11 12h9M4 18h10M18 18h2"/><circle cx="14" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="16" cy="18" r="2"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0112 0v6l2 2H4z"/><path d="M10 21a2 2 0 004 0"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10H3z"/><path d="M9.5 21v-6h5v6"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V3h9l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.3"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M3 7.5L12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18.5h2"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+</svg>
+
+<div class="page">
+  <div class="gridbg"></div>
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="orb o4"></div>
+
+  <header class="nav">
+    <div class="wrap">
+      <a class="brand" href="#top"><svg aria-hidden="true"><use href="#logo"/></svg><span data-cfg="name">Lumen</span></a>
+      <nav class="nav-links" aria-label="Page sections">
+        <a href="#features">Features</a>
+        <a href="#screens">Screens</a>
+        <a href="#get">Install</a>
+      </nav>
+      <a class="btn-sm js-apk" href="#get"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Get APK</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-copy">
+          <span class="pill"><i></i>Version <span data-cfg="version">2.4.1</span> is out</span>
+          <h1>Everything you track, in <span class="grad">one calm app.</span></h1>
+          <p class="lead"><span data-cfg="name">Lumen</span> keeps your goals, tasks and habits in one place that opens instantly, works offline and stays private. Install the APK and be running in under a minute.</p>
+          <a class="dl js-apk" href="#get">
+            <svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>
+            <span><b>Download APK</b><small>v<span data-cfg="version">2.4.1</span> &middot; <span data-cfg="size">38 MB</span> &middot; Android <span data-cfg="android">8.0+</span></small></span>
+          </a>
+          <div class="hero-links">
+            <a href="#screens">See the screens <svg class="ic" aria-hidden="true"><use href="#i-arrow-down"/></svg></a>
+            <a href="#get">How to install</a>
+          </div>
+          <ul class="trust">
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Free to use</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>No ads</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>No account needed</li>
+          </ul>
+        </div>
+
+        <div class="stage">
+          <div class="chip c1"><span class="ci"><svg class="ic" aria-hidden="true"><use href="#i-bolt"/></svg></span><span><b>Opens instantly</b><small>Cold start under 1s</small></span></div>
+          <div class="chip c2"><span class="ci"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg></span><span><b>Private by default</b><small>Data stays on device</small></span></div>
+          <div class="chip c3"><span class="ci"><svg class="ic" aria-hidden="true"><use href="#i-wifi-off"/></svg></span><span><b>Works offline</b><small>Syncs when you return</small></span></div>
+          <div class="tilt">
+            <div class="phone big" role="img" aria-label="The app's home screen on a phone, showing a daily goal ring at 72 percent">
+              <div class="screen" data-screen="home"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap" aria-label="Release details">
+      <div class="facts">
+        <div class="fact rv" style="--d:0"><svg class="ic" aria-hidden="true"><use href="#i-tag"/></svg><span>Version</span><b data-cfg="version-full">v2.4.1</b></div>
+        <div class="fact rv" style="--d:80"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg><span>File size</span><b data-cfg="size">38 MB</b></div>
+        <div class="fact rv" style="--d:160"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg><span>Requires</span><b>Android <span data-cfg="android">8.0+</span></b></div>
+        <div class="fact rv" style="--d:240"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg><span>Updated</span><b data-cfg="updated">Nov 2026</b></div>
+      </div>
+    </section>
+
+    <section class="sec" id="screens">
+      <div class="wrap">
+        <div class="sec-head rv">
+          <span class="eyebrow">Screenshots</span>
+          <h2>A look inside</h2>
+          <p>Four screens you will use every day. Swipe to browse on your phone.</p>
+        </div>
+        <div class="rail" tabindex="0" aria-label="App screenshots">
+          <figure class="shot" style="margin-block:0"><div class="phone" role="img" aria-label="Home screen"><div class="screen" data-screen="home"></div></div><figcaption>Home</figcaption></figure>
+          <figure class="shot"><div class="phone" role="img" aria-label="Insights screen with a weekly bar chart"><div class="screen" data-screen="stats"></div></div><figcaption>Insights</figcaption></figure>
+          <figure class="shot"><div class="phone" role="img" aria-label="Task list screen"><div class="screen" data-screen="tasks"></div></div><figcaption>Tasks</figcaption></figure>
+          <figure class="shot"><div class="phone" role="img" aria-label="Settings screen"><div class="screen" data-screen="settings"></div></div><figcaption>Settings</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="features" style="padding-top:0">
+      <div class="wrap">
+        <div class="sec-head rv">
+          <span class="eyebrow">Features</span>
+          <h2>Built to stay out of your way</h2>
+          <p>Fast to open, light on battery and quiet until you need it.</p>
+        </div>
+        <div class="feats">
+          <article class="feat rv" style="--d:0"><div class="tile"><svg class="ic" aria-hidden="true"><use href="#i-bolt"/></svg></div><h3>Opens instantly</h3><p>Cold start in under a second, even on older phones.</p></article>
+          <article class="feat rv" style="--d:70"><div class="tile"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg></div><h3>Private by default</h3><p>Your data stays on your device. No account and no tracking.</p></article>
+          <article class="feat rv" style="--d:140"><div class="tile"><svg class="ic" aria-hidden="true"><use href="#i-wifi-off"/></svg></div><h3>Works offline</h3><p>Everything loads without a connection and syncs when you are back online.</p></article>
+          <article class="feat rv" style="--d:210"><div class="tile"><svg class="ic" aria-hidden="true"><use href="#i-battery"/></svg></div><h3>Easy on battery</h3><p>Background work is batched, so your charge lasts through the day.</p></article>
+          <article class="feat rv" style="--d:280"><div class="tile"><svg class="ic" aria-hidden="true"><use href="#i-sliders"/></svg></div><h3>Make it yours</h3><p>Pick an accent color, add home screen widgets and keep a true dark theme.</p></article>
+          <article class="feat rv" style="--d:350"><div class="tile"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg></div><h3>Gentle reminders</h3><p>Nudges arrive when they help and stay quiet when they would not.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="get" style="padding-top:0">
+      <div class="wrap">
+        <div class="band rv">
+          <div class="band-top">
+            <div>
+              <span class="eyebrow">Total downloads</span>
+              <span class="count" id="count" aria-live="off">284,913</span>
+              <p>Free to download and free to use. Grab the latest build below.</p>
+            </div>
+            <div>
+              <a class="dl js-apk" href="#get">
+                <svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>
+                <span><b>Download APK</b><small>v<span data-cfg="version">2.4.1</span> &middot; <span data-cfg="size">38 MB</span> &middot; Android <span data-cfg="android">8.0+</span></small></span>
+              </a>
+            </div>
+          </div>
+          <ol class="steps">
+            <li><b>1</b><span>Download the APK file to your phone.</span></li>
+            <li><b>2</b><span>Open it and allow &ldquo;Install unknown apps&rdquo; for your browser when Android asks.</span></li>
+            <li><b>3</b><span>Tap Install, then open <span data-cfg="name">Lumen</span> and you are set.</span></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <div>
+          <a class="brand" href="#top"><svg aria-hidden="true"><use href="#logo"/></svg><span data-cfg="name">Lumen</span></a>
+          <p>A calm home for everything you track. Made with care by <strong>YourBrand</strong>.</p>
+        </div>
+        <nav aria-label="Footer">
+          <a href="#features">Features</a>
+          <a href="#screens">Screens</a>
+          <a href="#get">Install</a>
+          <a href="#">Privacy</a>
+          <a href="#">Support</a>
+          <a href="#">Changelog</a>
+        </nav>
+      </div>
+      <div class="legal">
+        <span>&copy; 2026 YourBrand. All rights reserved.</span>
+        <span>Android is a trademark of Google LLC.</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  /* Edit these values: they fill every matching spot on the page. */
+  var CONFIG = {
+    name: 'Lumen',
+    version: '2.4.1',
+    size: '38 MB',
+    android: '8.0+',
+    updated: 'Nov 2026',
+    apk: 'application-693006c3-9358-4471-b36d-acc1dad24dbf.apk',            // put your APK link here, e.g. 'files/lumen-2.4.1.apk'
+    downloads: 284913
+  };
+
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var all = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+  all('[data-cfg]').forEach(function (el) {
+    var k = el.getAttribute('data-cfg');
+    el.textContent = k === 'version-full' ? 'v' + CONFIG.version : CONFIG[k];
+  });
+  all('.js-apk').forEach(function (a) {
+    a.setAttribute('href', CONFIG.apk);
+    if (CONFIG.apk.charAt(0) !== '#') a.setAttribute('download', '');
+  });
+  var cnt = document.getElementById('count');
+  cnt.textContent = CONFIG.downloads.toLocaleString('en-US');
+
+  var ic = function (n) { return '<svg class="ic" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; };
+  var tabs = function (on) {
+    return '<div class="s-tabs">' + ['home', 'chart', 'list', 'user'].map(function (n, i) {
+      return '<span class="' + (i === on ? 'on' : '') + '">' + ic(n) + '</span>';
+    }).join('') + '</div>';
+  };
+  var sb = '<div class="sb"><span>9:41</span><span class="sbi"><i></i><i></i><i></i></span></div>';
+  var item = function (cls, t, s) {
+    return '<div class="s-item"><span class="dot ' + cls + '"></span><div><b>' + t + '</b><small>' + s + '</small></div></div>';
+  };
+  var task = function (done, t, s) {
+    return '<div class="s-item ' + (done ? 'done' : '') + '"><span class="chk ' + (done ? 'on' : '') + '">' + (done ? ic('check') : '') + '</span><div><b>' + t + '</b><small>' + s + '</small></div></div>';
+  };
+  var tog = function (on, t) {
+    return '<div class="s-item"><b>' + t + '</b><span class="tg ' + (on ? 'on' : '') + '"></span></div>';
+  };
+  var bars = [45, 70, 55, 90, 62, 38, 76].map(function (h, i) {
+    return '<i class="' + (i > 4 ? 'lo' : '') + '" style="--h:' + h + '%;--i:' + i + '"></i>';
+  }).join('');
+
+  var screens = {
+    home: sb +
+      '<div><div class="s-hi">Good morning, Alex</div><div class="s-title">Today</div></div>' +
+      '<div class="s-card ringcard"><div class="ring-wrap"><svg viewBox="0 0 100 100"><circle class="trk" cx="50" cy="50" r="42"/><circle class="prg" cx="50" cy="50" r="42" pathLength="100" style="--o:28"/></svg><div class="ring-n">72%</div></div>' +
+      '<div class="ring-t"><b>Daily goal</b><span>3 of 4 done</span><em>On track</em></div></div>' +
+      '<div class="s-row"><div class="s-card mini"><b>3h 20m</b><span>Focus time</span></div><div class="s-card mini"><b>12 days</b><span>Streak</span></div></div>' +
+      item('', 'Morning review', '8:30') + item('b', 'Plan the week', '10:00') + tabs(0),
+    stats: sb +
+      '<div><div class="s-hi">This week</div><div class="s-title">Insights</div></div>' +
+      '<div class="s-card"><div class="bars">' + bars + '</div><div class="days"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div></div>' +
+      '<div class="s-row"><div class="s-card mini"><b>4h 12m</b><span>Daily average</span></div><div class="s-card mini"><b>+18%</b><span>Vs last week</span></div></div>' +
+      item('c', 'Best day', 'Thursday, 5h 40m') + tabs(1),
+    tasks: sb +
+      '<div><div class="s-hi">4 of 6 done</div><div class="s-title">Tasks</div></div>' +
+      '<div class="prog"><i></i></div>' +
+      task(true, 'Reply to messages', '8:00') + task(true, 'Stretch and walk', '9:15') + task(true, 'Write weekly notes', '11:00') +
+      task(false, 'Team check-in', '14:30') + task(false, 'Read for 20 minutes', '21:00') + tabs(2),
+    settings: sb +
+      '<div><div class="s-hi">Preferences</div><div class="s-title">Settings</div></div>' +
+      '<div class="s-card ringcard" style="gap:.8em"><span class="avatar"></span><div class="ring-t"><b>Alex Morgan</b><span>Synced just now</span></div></div>' +
+      tog(true, 'Dark theme') + tog(true, 'Reminders') + tog(true, 'Offline mode') + tog(false, 'Usage analytics') + tabs(3)
+  };
+  all('[data-screen]').forEach(function (el) { el.innerHTML = screens[el.getAttribute('data-screen')] || ''; });
+
+  /* scroll reveal (transform only, content is always visible) */
+  var rv = all('.rv');
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: .12 });
+    rv.forEach(function (el) { io.observe(el); });
+  } else {
+    rv.forEach(function (el) { el.classList.add('in'); });
+  }
+
+  /* download counter */
+  if ('IntersectionObserver' in window && !reduce) {
+    var co = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      co.disconnect();
+      var t0 = null, dur = 1700, end = CONFIG.downloads;
+      function step(t) {
+        if (t0 === null) t0 = t;
+        var p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+        cnt.textContent = Math.round(end * e).toLocaleString('en-US');
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }, { threshold: .6 });
+    co.observe(cnt);
+  }
+
+  /* phone tilt */
+  var stage = document.querySelector('.stage'), tilt = document.querySelector('.tilt');
+  if (!reduce && window.matchMedia && matchMedia('(hover: hover)').matches) {
+    stage.addEventListener('pointermove', function (e) {
+      var r = stage.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      tilt.style.transform = 'rotateY(' + (x * 14).toFixed(1) + 'deg) rotateX(' + (-y * 10).toFixed(1) + 'deg)';
+    });
+    stage.addEventListener('pointerleave', function () { tilt.style.transform = ''; });
+  }
+})();
+</script>
+
+</body></html>
